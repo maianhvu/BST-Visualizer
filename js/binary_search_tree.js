@@ -125,7 +125,7 @@ VisualBinarySearchTree.prototype.VERTICAL_DISTANCE = 50;
 VisualBinarySearchTree.prototype.HORIZONTAL_DISTANCE = 100;
 VisualBinarySearchTree.prototype.NODE_RADIUS = 15;
 
-VisualBinarySearchTree.prototype.rearrangeNodes = function(node) {
+VisualBinarySearchTree.prototype.rearrangeNodes = function(node, isFirstIteration) {
   var currentNode = node.parentNode;
   while (currentNode !== undefined && Math.abs(currentNode.center.x - node.center.x) >= (this.HORIZONTAL_DISTANCE / 2))
     currentNode = currentNode.parentNode;
@@ -139,6 +139,11 @@ VisualBinarySearchTree.prototype.rearrangeNodes = function(node) {
   }
   if (node.parentNode !== undefined)
     this.rearrangeNodes(node.parentNode);
+  if (isFirstIteration) {
+    var otherChild = node.parentNode.leftNode;
+    if (otherChild === node) otherChild = node.parentNode.rightNode;
+    if (otherChild !== undefined) this.rearrangeNodes(otherChild);
+  }
 }
 
 VisualBinarySearchTree.prototype.insert = function(value, type) {
@@ -157,7 +162,7 @@ VisualBinarySearchTree.prototype.insert = function(value, type) {
       x: newNode.parentNode.center.x + offset,
       y: newNode.parentNode.center.y + this.VERTICAL_DISTANCE
     };
-    this.rearrangeNodes(newNode);
+    this.rearrangeNodes(newNode, true);
   }
   return newNode;
 }

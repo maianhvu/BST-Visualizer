@@ -1,24 +1,23 @@
 // Define operations
-var Operations = Object.freeze({
-  insert: true,
-  search: true,
-  searchMin: false,
-  searchMax: false,
-  successor: true,
-  predecessor: true,
-  delete: true,
-  deleteAll: false
-});
+var Operations = [
+  { name: 'insert',      requireInput: true },
+  { name: 'search',      requireInput: true },
+  { name: 'searchMin',   requireInput: false },
+  { name: 'searchMax',   requireInput: false },
+  { name: 'successor',   requireInput: true },
+  { name: 'predecessor', requireInput: true },
+  { name: 'delete',      requireInput: true },
+  { name: 'deleteAll',   requireInput: false }
+];
 // Add operations to select element
 var selectField = document.getElementById('tree_operation');
 selectField.innerHTML = '';
 var firstProperty = true;
-var operationsCount = 0;
 for (var key in Operations)
   if (Operations.hasOwnProperty(key)) {
-    selectField.innerHTML += '<option value="' + operationsCount++ + '">' + key + '</option>';
+    selectField.innerHTML += '<option value="' + key + '">' + Operations[key].name + '</option>';
     if (firstProperty) {
-      document.getElementById('commit').innerHTML = key;
+      document.getElementById('commit').innerHTML = Operations[key].name;
       firstProperty = false;
     }
   }
@@ -29,8 +28,7 @@ function changeOperation(value) {
   operation = parseInt(value);
   var selectedOperation = selectField.options[selectField.selectedIndex].text;
   document.getElementById('commit').innerHTML = selectedOperation;
-  document.getElementById('tree_value').style.display = Operations[selectedOperation] ? "inline-block" : "none";
-  console.log(Operations[selectedOperation]);
+  document.getElementById('tree_value').style.display = Operations[selectedOperation].requireInput ? "inline-block" : "none";
 }
 
 var log = function(message, emphasize) {
@@ -57,15 +55,15 @@ document.getElementById('commit').addEventListener("click", function(e) {
     return false;
   }
   m_tree.clearHighlight();
-  switch (operation) {
-    case Operations.insert:
+  switch (Operations[operation].name) {
+    case 'insert':
       m_tree.insert(value);
       break;
-    case Operations.search:
+    case 'search':
       var node = m_tree.search(value);
       m_tree.highlightNode(node);
       break;
-    case Operations.delete:
+    case 'delete':
       break;
   }
   m_tree.drawTree();

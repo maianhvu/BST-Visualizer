@@ -1,0 +1,71 @@
+$canvas-width: 600px
+$canvas-height: 480px
+$canvas-border: 1px solid #ddd
+//-------------------------------------------------------------------------------------------------
+// MIXINS
+//-------------------------------------------------------------------------------------------------
+=transition($property, $duration, $function, $delay)
+  -webkit-transition: $property $duration $function $delay
+  -moz-transition: $property $duration $function $delay
+  -o-transition: $property $duration $function $delay
+  transition: $property $duration $function $delay
+//-------------------------------------------------------------------------------------------------
+// MAIN STYLES
+//-------------------------------------------------------------------------------------------------
+.canvas-container
+  width: ceil($canvas-width*3/2)
+  height: $canvas-height
+  margin: auto
+  position: relative
+
+#main-canvas,
+.tree-controls
+  position: absolute
+
+#main-canvas
+  border: $canvas-border
+  width: $canvas-width
+  height: $canvas-height
+  top: 0
+  left: 0
+
+.tree-controls
+  width: floor($canvas-width/2)
+  height: $canvas-height
+  left: $canvas-width
+  top: 0
+
+  padding: 10px
+  box-sizing: border-box
+
+  h2
+    margin: .25rem 0 .25rem 0
+
+#tree_log
+  overflow-y: scroll
+  width: 100%
+  height: 200px
+  background-color: #f7f7f7
+  box-sizing: border-box
+  padding: 10px
+
+::-webkit-scrollbar
+  -webkit-appearance: none
+  width: 7px
+
+::-webkit-scrollbar-thumb
+  border-radius: 4px
+  background-color: rgba(0,0,0,.35)
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.35)
+
+label,
+input[type="text"],
+select,
+  display: block
+
+input[type="number"],
+button
+  display: inline-block
+
+label
+  margin: 1em 0 .25em 0

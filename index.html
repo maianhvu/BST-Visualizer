@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Trees</title>
+        <link rel="stylesheet" href="http://necolas.github.io/normalize.css/3.0.2/normalize.css">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+
+    <body>
+        <div class="canvas-container">
+            <canvas id="main-canvas" width="600" height="480">
+            </canvas>
+            <aside class="tree-controls">
+                <h2>Binary Search Tree</h2>
+                <form>
+                    <label for="tree_operation">
+                        Operation:
+                    </label>
+                    <select id="tree_operation" name="tree_operation" autofocus="autofocus" onchange="changeOperation(this.value);">
+                        <option value="-1">-- Initializing --</option>
+                    </select>
+                    <label for="tree_value">
+                        Value:
+                    </label>
+                    <input type="number" value="0" name="tree_value" id="tree_value">
+                    <button id="commit"></button>
+                </form>
+                <label>
+                    <strong>Log:</strong>
+                </label>
+                <div id="tree_log">
+                </div>
+                <form>
+                    <label for="tree_log_clear">
+                        <input type="checkbox" name="tree_log_clear" id="tree_log_clear" checked="checked">
+                        Clear log for new operation.
+                    </label>
+                </form>
+            </aside>
+        </div>
+        <script src="js/initializer.js"></script>
+        <script src="js/tree_node.js"></script>
+        <script src="js/tree_visualizer.js"></script>
+        <script src="js/binary_search_tree.js"></script>
+        <script src="js/script.js"></script>
+    </body>
+</html>

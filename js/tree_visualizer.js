@@ -9,6 +9,9 @@ var TreeVisualizer = function(canvas) {
   this.startX = Math.round(canvas.getAttribute('width') / 2);
   this.startY = Math.round(canvas.getAttribute('height') / 12);
 
+  // for moving
+  this.canvas.canvasOffset = { x: 0, y: 0 };
+
   this.highlightedNode = undefined;
 };
 
@@ -44,7 +47,7 @@ TreeVisualizer.prototype.clear = function() {
  */
 TreeVisualizer.prototype.drawCircle = function(center, radius, highlight) {
   this.ctx.beginPath();
-  this.ctx.arc(center.x, center.y, radius, 0, 2*Math.PI);
+  this.ctx.arc(this.canvas.canvasOffset.x + center.x, this.canvas.canvasOffset.y + center.y, radius, 0, 2*Math.PI);
   if (highlight === undefined || highlight === false) {
     this.ctx.strokeStyle = "#f2ab1b";
     this.ctx.stroke();
@@ -67,7 +70,7 @@ TreeVisualizer.prototype.drawValue = function(center, value, highlight) {
   this.ctx.textAlign = "start";
   var textWidth = this.ctx.measureText(value).width;
   this.ctx.fillStyle = (highlight === true) ? "#fff" : "#000";
-  this.ctx.fillText(value, center.x - Math.round(textWidth / 2), center.y + this.textHorizontalOffset);
+  this.ctx.fillText(value, this.canvas.canvasOffset.x + center.x - Math.round(textWidth / 2), this.canvas.canvasOffset.y + center.y + this.textHorizontalOffset);
 };
 
 /**
@@ -86,7 +89,7 @@ TreeVisualizer.prototype.drawWeight = function(position, weight, leftAlign) {
   this.ctx.font = "10px Helvetica";
   if (leftAlign === undefined) leftAlign = true;
   this.ctx.textAlign = leftAlign ? "start" : "end";
-  this.ctx.fillText(weight, position.x, position.y);
+  this.ctx.fillText(weight, this.canvas.canvasOffset.x + position.x, this.canvas.canvasOffset.y + position.y);
 };
 
 /*
@@ -126,8 +129,8 @@ TreeVisualizer.prototype.joinNodes = function(node1, node2) {
   var theta = Math.atan2(node1.center.y - node2.center.y, node1.center.x - node2.center.x);
   var xOffset = Math.round(this.nodeRadius * Math.cos(theta));
   var yOffset = Math.round(this.nodeRadius * Math.sin(theta));
-  this.ctx.moveTo(node1.center.x - xOffset, node1.center.y - yOffset);
-  this.ctx.lineTo(node2.center.x + xOffset, node2.center.y + yOffset);
+  this.ctx.moveTo(this.canvas.canvasOffset.x + node1.center.x - xOffset, this.canvas.canvasOffset.y + node1.center.y - yOffset);
+  this.ctx.lineTo(this.canvas.canvasOffset.x + node2.center.x + xOffset, this.canvas.canvasOffset.y + node2.center.y + yOffset);
   this.ctx.stroke();
 };
 

@@ -70,6 +70,32 @@ document.getElementById('commit').addEventListener("click", function(e) {
   return false;
 });
 
-var m_tree = new VisualBinarySearchTree(log, document.getElementById('main-canvas'), {
+// drag events for canvas
+var mainCanvas = document.getElementById('main-canvas');
+var m_tree = new VisualBinarySearchTree(log, mainCanvas, {
   drawWeights: false
 });
+var isDraggingCanvas = false;
+var startPosition = { x: undefined, y: undefined };
+var originalOffset = { x: 0, y: 0};
+
+mainCanvas.addEventListener("mousedown", function(e) {
+  isDraggingCanvas = true;
+  originalOffset = mainCanvas.canvasOffset;
+  startPosition = { x: e.layerX, y: e.layerY };
+  console.log(startPosition);
+});
+mainCanvas.addEventListener("mouseup", function(e) {
+  isDraggingCanvas = false;
+  startPosition = { x: undefined, y: undefined };
+});
+mainCanvas.addEventListener("mousemove", function(e) {
+  if (isDraggingCanvas) {
+    mainCanvas.canvasOffset = {
+      x: originalOffset.x + (e.layerX - startPosition.x),
+      y: originalOffset.y + (e.layerY - startPosition.y)
+    }
+    m_tree.drawTree();
+  }
+});
+

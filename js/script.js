@@ -75,11 +75,3 @@ document.getElementById('commit').addEventListener("click", function(e) {
 var m_tree = new VisualBinarySearchTree(log, document.getElementById('main-canvas'), {
   drawWeights: false
 });
-m_tree.insert(45);
-m_tree.insert(12);
-m_tree.insert(5);
-m_tree.insert(7);
-m_tree.insert(67);
-m_tree.insert(7);
-m_tree.drawTree();
-console.log(m_tree);

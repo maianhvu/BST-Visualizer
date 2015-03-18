@@ -1,11 +1,5 @@
-var BinarySearchTree = function(logger) {
+var BinarySearchTree = function() {
   this.root = undefined;
-  this.logger = logger;
-}
-
-BinarySearchTree.prototype.log = function(message, emphasize) {
-  if (this.logger !== undefined)
-    this.logger(message, emphasize);
 }
 
 BinarySearchTree.prototype.insert = function(val, type) {
@@ -15,102 +9,89 @@ BinarySearchTree.prototype.insert = function(val, type) {
   // convert value to int
   // somehow if we don't do this, things screw up
   var value = parseInt(val);
-  this.log("Begin insertion of " + value + ".", true);
+  var newNode = new nodeType(value);
+
   if (this.root === undefined) {
-    this.log("Insert " + value + " as root.");
-    this.root = new nodeType(value);
-    return this.root;
+    this.root = newNode;
   } else {
-    var parentNode = this.root;
-    this.log("Start at root node.");
-    while (parentNode.leftNode !== undefined || parentNode.rightNode !== undefined) {
-      if (value < parseInt(parentNode.value)) {
-        this.log(value + " is smaller than " + parseInt(parentNode.value) + ", go left.");
-        if (parentNode.leftNode === undefined) break;
-        parentNode = parentNode.leftNode;
-        continue;
-      }
-      if (value > parseInt(parentNode.value)) {
-        this.log(value + " is larger than " + parseInt(parentNode.value) + ", go right.");
-        if (parentNode.rightNode === undefined) break;
-        parentNode = parentNode.rightNode;
-        continue;
-      }
+    var thisNode = this.root;
+    while (thisNode !== undefined) {
+      if (value < thisNode.value) {
+        if (thisNode.leftNode !== undefined)
+          thisNode = thisNode.leftNode;
+        else {
+          newNode.isRightChild = false;
+          thisNode.leftNode = newNode;
+          break;
+        }
+      } else if (value > thisNode.value) {
+        if (thisNode.rightNode !== undefined)
+          thisNode = thisNode.rightNode;
+        else {
+          thisNode.rightNode = newNode;
+          break;
+        }
+      } else return undefined;
     }
-    if (value === parseInt(parentNode.value)) {
-      this.log(value + " already exists.");
-      return undefined;
+    newNode.parentNode = thisNode;
+    while (thisNode !== undefined) {
+      thisNode.weight += 1;
+      thisNode = thisNode.parentNode;
     }
-    var newNode = new nodeType(value, parentNode);
-    var logMsg = "Insert " + value + " as ";
-    if (value < parseInt(parentNode.value)) {
-      parentNode.leftNode = newNode;
-      logMsg += "left";
-    } else {
-      parentNode.rightNode = newNode;
-      logMsg += "right";
-    }
-    logMsg += " child of " + parentNode.value + ".";
-    this.log(logMsg);
-    return newNode;
-  }
-}
-
-BinarySearchTree.prototype.search = function(val) {
-  var value = parseInt(val);
-  this.log("Begin searching for " + value + ".", true);
-  var thisNode = this.root;
-  this.log("Starting at root node.");
-  while (thisNode !== undefined && value !== parseInt(thisNode.value)) {
-    if (value < parseInt(thisNode.value)) {
-      this.log(value + " is smaller than " + thisNode.value + ", go left.");
-      thisNode = thisNode.leftNode;
-      continue;
-    }
-    if (value > parseInt(thisNode.value)) {
-      this.log(value + " is larger than " + thisNode.value + ", go right.");
-      thisNode = thisNode.rightNode;
-      continue;
-    }
-  }
-  if (thisNode !== undefined && value === parseInt(thisNode.value)) {
-    this.log("Searching completed, found " + value + ".");
-    return thisNode;
-  } else {
-    this.log("Searching complete, " + value + " does not exist in the tree.");
-    return undefined;
-  }
-}
-//-------------------------------------------------------------------------------------------------
-// WEIGHTED BINARY TREE
-//-------------------------------------------------------------------------------------------------
-var WeightedBinarySearchTree = function(logger) {
-  BinarySearchTree.call(this, logger);
-}
-WeightedBinarySearchTree.inheritsFrom(BinarySearchTree);
-
-WeightedBinarySearchTree.prototype.insert = function(value, type) {
-  var nodeType = type;
-  if (nodeType === undefined) nodeType = WeightedTreeNode;
-  var newNode = BinarySearchTree.prototype.insert.call(this, value, nodeType);
-  if (newNode === undefined)
-    return undefined;
-  var node = newNode.parentNode;
-  while (node !== undefined) {
-    node.weight += 1;
-    node = node.parentNode;
   }
   return newNode;
 }
 
-//WeightedBinarySearchTree.prototype.search = function(node) {
-  //return BinarySearchTree.prototype.search.call(this, node);
-//}
+BinarySearchTree.prototype.search = function(val) {
+  if (this.root === undefined) return undefined;
+  var value = parseInt(val);
+  var thisNode = this.root;
+  while (thisNode !== undefined && value !== parseInt(thisNode.value)) {
+    if (value < parseInt(thisNode.value)) {
+      thisNode = thisNode.leftNode;
+      continue;
+    }
+    if (value > parseInt(thisNode.value)) {
+      thisNode = thisNode.rightNode;
+      continue;
+    }
+  }
+  if (thisNode !== undefined && value === parseInt(thisNode.value))
+    return thisNode;
+  else
+    return undefined;
+}
+
+BinarySearchTree.prototype.searchMinMax = function(min, node) {
+  if (this.root === undefined) return undefined;
+  var thisNode = node;
+  if (thisNode === undefined) thisNode = this.root;
+  while (min && thisNode.leftNode !== undefined || !min && thisNode.rightNode !== undefined) {
+    thisNode = min ? thisNode.leftNode : thisNode.rightNode;
+  }
+  return thisNode;
+}
+
+BinarySearchTree.prototype.searchMin = function(node) {
+  return BinarySearchTree.prototype.searchMinMax.call(this, true, node);
+}
+BinarySearchTree.prototype.searchMax = function(node) {
+  return BinarySearchTree.prototype.searchMinMax.call(this, false, node);
+}
+
+BinarySearchTree.prototype.successor = function(val) {
+  var value = parseInt(val);
+  var result = this.root;
+  if (result === undefined) {
+    return undefined;
+  }
+  // TODO: Code up the rest of this thing
+}
 //-------------------------------------------------------------------------------------------------
 // VISUAL BINARY TREE
 //-------------------------------------------------------------------------------------------------
-var VisualBinarySearchTree = function(logger, canvas, config) {
-  WeightedBinarySearchTree.call(this, logger);
+var VisualBinarySearchTree = function(canvas, config) {
+  BinarySearchTree.call(this);
   this.visualizer = new TreeVisualizer(canvas);
   this.visualizer.config({
     nodeRadius: this.NODE_RADIUS,
@@ -119,7 +100,7 @@ var VisualBinarySearchTree = function(logger, canvas, config) {
   if (config !== undefined)
     this.visualizer.config(config);
 }
-VisualBinarySearchTree.inheritsFrom(WeightedBinarySearchTree);
+VisualBinarySearchTree.inheritsFrom(BinarySearchTree);
 // constants
 VisualBinarySearchTree.prototype.VERTICAL_DISTANCE = 50;
 VisualBinarySearchTree.prototype.HORIZONTAL_DISTANCE = 100;
@@ -149,7 +130,7 @@ VisualBinarySearchTree.prototype.rearrangeNodes = function(node, isFirstIteratio
 VisualBinarySearchTree.prototype.insert = function(value, type) {
   var nodeType = type;
   if (nodeType === undefined) nodeType = VisualTreeNode;
-  var newNode = WeightedBinarySearchTree.prototype.insert.call(this, value, nodeType);
+  var newNode = BinarySearchTree.prototype.insert.call(this, value, nodeType);
   if (newNode === undefined)
     return undefined;
   if (newNode === this.root) {
@@ -166,10 +147,6 @@ VisualBinarySearchTree.prototype.insert = function(value, type) {
   }
   return newNode;
 }
-// Methods inheritance
-VisualBinarySearchTree.prototype.search = function(node) {
-  return WeightedBinarySearchTree.prototype.search.call(this, node);
-}
 
 VisualBinarySearchTree.prototype.drawNode = function(node) {
   this.visualizer.drawNode(node);
@@ -185,11 +162,11 @@ VisualBinarySearchTree.prototype.drawNode = function(node) {
 
 VisualBinarySearchTree.prototype.drawTree = function() {
   this.visualizer.clear();
-  this.drawNode(this.root);
+  if (this.root !== undefined)
+    this.drawNode(this.root);
 }
 
 VisualBinarySearchTree.prototype.highlightNode = function(node) {
-  console.log(node);
   if (node === undefined || !node instanceof VisualTreeNode) return;
   this.visualizer.highlightedNode = node;
 }

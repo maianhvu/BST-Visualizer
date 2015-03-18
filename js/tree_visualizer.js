@@ -89,6 +89,7 @@ TreeVisualizer.prototype.drawWeight = function(position, weight, leftAlign) {
   this.ctx.font = "10px Helvetica";
   if (leftAlign === undefined) leftAlign = true;
   this.ctx.textAlign = leftAlign ? "start" : "end";
+  this.ctx.fillStyle = "#000";
   this.ctx.fillText(weight, this.canvas.canvasOffset.x + position.x, this.canvas.canvasOffset.y + position.y);
 };
 

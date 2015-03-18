@@ -11,21 +11,14 @@ var TreeNode = function(value, parentNode) {
   this.parentNode = parentNode;
   this.leftNode = undefined;
   this.rightNode = undefined;
-};
-//-------------------------------------------------------------------------------------------------
-// WEIGHTED TREE NODE
-//-------------------------------------------------------------------------------------------------
-var WeightedTreeNode = function(value, parentNode) {
-  TreeNode.call(this, value, parentNode);
   this.weight = 1;
   this.isRightChild = parentNode === undefined || value > parentNode.value;
 };
-WeightedTreeNode.inheritsFrom(TreeNode);
 //-------------------------------------------------------------------------------------------------
 // VISUAL TREE NODE
 //-------------------------------------------------------------------------------------------------
 var VisualTreeNode = function(value, parentNode) {
-  WeightedTreeNode.call(this, value, parentNode);
+  TreeNode.call(this, value, parentNode);
   this.center = { x: undefined, y: undefined};
 };
-VisualTreeNode.inheritsFrom(WeightedTreeNode);
+VisualTreeNode.inheritsFrom(TreeNode);
